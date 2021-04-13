@@ -21,10 +21,10 @@ function App() {
     author: "",
     count: "",
     name: "",
-    all_posts: "",
     posts: [],
     comments: "",
-    users: ""
+    users: "",
+    additionalViews: 0
   });
 
   useEffect(() => {
@@ -40,12 +40,12 @@ function App() {
     });   
 
   }, []);
-  console.log('after state inserted', state.users);
+
 
   const getComments = (id) =>
     fetch(`${api}/comments?postId=${id}`)
-    .then(response => response.json())
-    .then(json => json.length);
+    .then(response => response.json());
+
 
   const getUserPosts = (id) =>
     fetch(`${api}/posts?userId=${id}`)
@@ -90,10 +90,16 @@ function App() {
     }
   }));
 
-  const classes = useStyles();  
+  const classes = useStyles();
 
   
+  const showMore = (event) => {
+    event.preventDefault();
+    setState(prevState => {
+      return {...prevState, additionalViews: (prevState.additionalViews + 2) };
+    });
 
+  }
   const handleChange = (event) => {
     const name = event.target.name;
     const value = event.target.value;
@@ -103,13 +109,21 @@ function App() {
       let posts = "";
       state.users.map((x,i) => {
         if (state.users[i].name === value){
-            console.log('lsss', state.users[i].name, '\n', value,'\n', state.users[i].name === value)
             getUserPosts(state.users[i].id)
             .then((json) => {
+              posts = json;
+              posts.map((x,i) => {
+                getComments(posts[i].id)
+                .then((json) => {
+                  posts[i].totalComments = json.length;
+                });
+              });
+              console.log('a', posts);
               setState({
                 ...state,
                 [name]:value,
-                posts : json
+                posts : posts,
+                additionalViews: 0
               });
           });
         }
@@ -119,6 +133,7 @@ function App() {
       setState({
         ...state,
         [name]:value,
+        additionalViews: 0
       });
 
   };
@@ -171,7 +186,7 @@ function App() {
               </Select>
             </FormControl>
         </Grid>
-        {(state.count && state.posts.length>0) && ([...Array(parseInt(state.count))].map((e, i) => ( 
+        {(state.count && state.posts.length>0) && ([...Array(parseInt(state.count) + state.additionalViews)].map((e, i) => ( 
           <Grid item xs={12} key={state.posts[i].id}>
             <Card className={classes.root} variant="outlined">
               <CardContent>
@@ -183,7 +198,7 @@ function App() {
                 </Typography>
               </CardContent>
               <CardActions>
-                <Badge badgeContent={5} color="primary">
+                <Badge badgeContent={state.posts[i].totalComments} color="primary">
                   <CommentIcon/>
                 </Badge>
               </CardActions>
@@ -193,7 +208,7 @@ function App() {
 
         <Grid item xs={12}>
           {state.count && state.author ? (
-            <Button variant="outlined" color="primary" className={classes.show_more_btn}>
+            <Button variant="outlined" color="primary" onClick= {showMore} className={classes.show_more_btn}>
                     SHOW MORE
             </Button>
           ):
