@@ -22,35 +22,35 @@ function App() {
     count: "",
     name: "",
     all_posts: "",
-    post: [],
-    comments: ""
+    posts: [],
+    comments: "",
+    users: ""
   });
 
   useEffect(() => {
-    const getAllPosts = () =>
-    fetch(`${api}/posts`)
+    const getAllUsers = () =>
+    fetch(`${api}/users`)
     .then(response => response.json());
 
-    getAllPosts()
+    getAllUsers()
     .then((json) => {
-      console.log("json");
       setState(prevState => {
-        return {...prevState, all_posts: json };
+        return {...prevState, users: json };
       });
     });   
 
   }, []);
-  console.log('after state inserted', state.all_posts);
+  console.log('after state inserted', state.users);
 
   const getComments = (id) =>
     fetch(`${api}/comments?postId=${id}`)
     .then(response => response.json())
     .then(json => json.length);
 
-    // getComments(1)
-    // .then((json) => {
-    //  console.log(json.length);
-    // });   
+  const getUserPosts = (id) =>
+    fetch(`${api}/posts?userId=${id}`)
+    .then(response => response.json());
+
   
 
   const useStyles = makeStyles((theme) => ({
@@ -94,32 +94,40 @@ function App() {
 
   
 
-  const handleAuthorChange = (event) => {
-    const author = event.target.name;
+  const handleChange = (event) => {
+    const name = event.target.name;
+    const value = event.target.value;
+    // let comments_count = 0;
     // getComments(state.all_posts[i].id)
+    if (name === 'author'){ 
+      let posts = "";
+      state.users.map((x,i) => {
+        if (state.users[i].name === value){
+            console.log('lsss', state.users[i].name, '\n', value,'\n', state.users[i].name === value)
+            getUserPosts(state.users[i].id)
+            .then((json) => {
+              setState({
+                ...state,
+                [name]:value,
+                posts : json
+              });
+          });
+        }
+      });      
+    }
+    else if (name ==='count')
+      setState({
+        ...state,
+        [name]:value,
+      });
 
-    setState({
-      ...state,
-      [author]: event.target.value
-    });
-    // setState(prevState => {
-    //   return {...prevState, author: author };
-    // });
   };
 
-  const handleCountChange = (event) => {
-    const count = event.target.name;
-    setState({
-      ...state,
-      [count]: event.target.value
-    });
-    // setState(prevState => {
-    //   return {...prevState, count: count };
-    // });
-  };
-  if (state.all_posts && state.count){
-    console.log('count', parseInt(state.count), 'state', state.all_posts[0].title, 'array', [...Array(parseInt(state.count)-1)])
-  }
+
+  // if (state.all_posts && state.count){
+  //   console.log('count', parseInt(state.count), 'state', state.all_posts[0].title, 'array', [...Array(parseInt(state.count)-1)])
+  // }
+
   return (
     <div>
       <Grid container spacing={3} className={classes.grid_container}>
@@ -129,7 +137,7 @@ function App() {
             <Select
               native
               value={state.author}
-              onChange={handleAuthorChange}
+              onChange={handleChange}
               label="Author"
               inputProps={{
                 name: "author",
@@ -137,9 +145,9 @@ function App() {
               }}
             >
               <option aria-label="None" value="" />
-              <option value={1}>Name 1</option>
-              <option value={2}>Name 2</option>
-              <option value={3}>Name 3</option>
+              {state.users && (state.users.map((x,i) => (
+                <option value={state.users[i].name} key={state.users[i].id}>{state.users[i].name}</option>
+              )))}
             </Select>
           </FormControl>
         </Grid>
@@ -149,7 +157,7 @@ function App() {
               <Select
                 native
                 value={state.count}
-                onChange={handleCountChange}
+                onChange={handleChange}
                 label="Count"
                 inputProps={{
                   name: "count",
@@ -163,19 +171,19 @@ function App() {
               </Select>
             </FormControl>
         </Grid>
-        {state.all_posts && state.count && ([...Array(parseInt(state.count)-1)].map((e, i) => ( 
-          <Grid item xs={12} key={state.all_posts[i].id}>
+        {(state.count && state.posts.length>0) && ([...Array(parseInt(state.count))].map((e, i) => ( 
+          <Grid item xs={12} key={state.posts[i].id}>
             <Card className={classes.root} variant="outlined">
               <CardContent>
                 <Typography variant="h5" component="h2">
-                  {state.all_posts[i].title}
+                  {state.posts[i].title}
                 </Typography>
                 <Typography variant="body1" component="p">
-                {state.all_posts[i].body}
+                {state.posts[i].body}
                 </Typography>
               </CardContent>
               <CardActions>
-                <Badge badgeContent={} color="primary">
+                <Badge badgeContent={5} color="primary">
                   <CommentIcon/>
                 </Badge>
               </CardActions>
@@ -184,7 +192,7 @@ function App() {
           )))}
 
         <Grid item xs={12}>
-          {state.count ? (
+          {state.count && state.author ? (
             <Button variant="outlined" color="primary" className={classes.show_more_btn}>
                     SHOW MORE
             </Button>
