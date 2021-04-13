@@ -19,7 +19,7 @@ function App() {
   const api = 'https://jsonplaceholder.typicode.com';
   const [state, setState] = useState({
     author: "",
-    count: "",
+    count: 0,
     name: "",
     posts: [],
     comments: "",
@@ -132,7 +132,7 @@ function App() {
     else if (name ==='count')
       setState({
         ...state,
-        [name]:value,
+        [name]:parseInt(value),
         additionalViews: 0
       });
 
@@ -186,28 +186,34 @@ function App() {
               </Select>
             </FormControl>
         </Grid>
-        {(state.count && state.posts.length>0) && ([...Array(parseInt(state.count) + state.additionalViews)].map((e, i) => ( 
-          <Grid item xs={12} key={state.posts[i].id}>
-            <Card className={classes.root} variant="outlined">
-              <CardContent>
-                <Typography variant="h5" component="h2">
-                  {state.posts[i].title}
-                </Typography>
-                <Typography variant="body1" component="p">
-                {state.posts[i].body}
-                </Typography>
-              </CardContent>
-              <CardActions>
-                <Badge badgeContent={state.posts[i].totalComments} color="primary">
-                  <CommentIcon/>
-                </Badge>
-              </CardActions>
-            </Card>
-          </Grid>
-          )))}
+        {(state.count > 0 && state.posts.length>0) && 
+        ([...Array(
+          (state.count + state.additionalViews) > state.posts.length 
+          ? 
+          state.posts.length 
+          : 
+          (state.count + state.additionalViews))].map((e, i) => ( 
+            <Grid item xs={12} key={state.posts[i].id}>
+              <Card className={classes.root} variant="outlined">
+                <CardContent>
+                  <Typography variant="h5" component="h2">
+                    {state.posts[i].title}
+                  </Typography>
+                  <Typography variant="body1" component="p">
+                  {state.posts[i].body}
+                  </Typography>
+                </CardContent>
+                <CardActions>
+                  <Badge badgeContent={state.posts[i].totalComments} color="primary">
+                    <CommentIcon/>
+                  </Badge>
+                </CardActions>
+              </Card>
+            </Grid>
+            )))}
 
         <Grid item xs={12}>
-          {state.count && state.author ? (
+          {(state.count && state.author ) && ((state.count + state.additionalViews ) < state.posts.length) ? (
             <Button variant="outlined" color="primary" onClick= {showMore} className={classes.show_more_btn}>
                     SHOW MORE
             </Button>
