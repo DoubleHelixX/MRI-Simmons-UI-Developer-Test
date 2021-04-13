@@ -11,6 +11,8 @@ import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
+import Badge from '@material-ui/core/Badge';
+import CommentIcon from '@material-ui/icons/Comment';
 
 
 function App() {
@@ -19,13 +21,16 @@ function App() {
     author: "",
     count: "",
     name: "",
-    all_posts: ""
+    all_posts: "",
+    post: [],
+    comments: ""
   });
 
   useEffect(() => {
     const getAllPosts = () =>
     fetch(`${api}/posts`)
-    .then(response => response.json())
+    .then(response => response.json());
+
     getAllPosts()
     .then((json) => {
       console.log("json");
@@ -36,6 +41,17 @@ function App() {
 
   }, []);
   console.log('after state inserted', state.all_posts);
+
+  const getComments = (id) =>
+    fetch(`${api}/comments?postId=${id}`)
+    .then(response => response.json())
+    .then(json => json.length);
+
+    // getComments(1)
+    // .then((json) => {
+    //  console.log(json.length);
+    // });   
+  
 
   const useStyles = makeStyles((theme) => ({
     root: {
@@ -75,11 +91,13 @@ function App() {
   }));
 
   const classes = useStyles();  
-  const bull = <span className={classes.bullet}>•</span>;
+
   
 
   const handleAuthorChange = (event) => {
     const author = event.target.name;
+    // getComments(state.all_posts[i].id)
+
     setState({
       ...state,
       [author]: event.target.value
@@ -152,19 +170,18 @@ function App() {
                 <Typography variant="h5" component="h2">
                   {state.all_posts[i].title}
                 </Typography>
-                <Typography variant="body2" component="p">
+                <Typography variant="body1" component="p">
                 {state.all_posts[i].body}
                 </Typography>
               </CardContent>
               <CardActions>
-             
+                <Badge badgeContent={} color="primary">
+                  <CommentIcon/>
+                </Badge>
               </CardActions>
             </Card>
           </Grid>
           )))}
-
-
-       
 
         <Grid item xs={12}>
           {state.count ? (
