@@ -66,6 +66,12 @@ function App() {
     pos: {
       marginBottom: 12,
     },
+    show_more_btn: {
+      width: "100%",
+      textAlign: "center",
+      fontWeight: "bold"
+      
+    }
   }));
 
   const classes = useStyles();  
@@ -151,7 +157,7 @@ function App() {
                 </Typography>
               </CardContent>
               <CardActions>
-                <Button size="small">Learn More</Button>
+             
               </CardActions>
             </Card>
           </Grid>
@@ -161,7 +167,17 @@ function App() {
        
 
         <Grid item xs={12}>
-          <Paper className={classes.paper}>xs=3</Paper>
+          {state.count ? (
+            <Button variant="outlined" color="primary" className={classes.show_more_btn}>
+                    SHOW MORE
+            </Button>
+          ):
+          (
+            <Button variant="outlined" color="primary" className={classes.show_more_btn} disabled>
+                  SHOW MORE
+            </Button>
+          )
+          }
         </Grid>
       </Grid>
     </div>
