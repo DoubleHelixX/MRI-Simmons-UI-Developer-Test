@@ -4,6 +4,8 @@ import Grid from "@material-ui/core/Grid";
 import DropdownBtns from "./DropdownBtns";
 import AuthorContentCard from "./AuthorContentCard";
 import ShowMoreBtn from "./ShowMoreBtn";
+import LoadingBar from "react-redux-loading";
+
 
 
 
@@ -21,16 +23,7 @@ function App() {
   });
 
   useEffect(() => {
-    const getAllUsers = () =>
-    fetch(`${api}/users`)
-    .then(response => response.json());
-
-    getAllUsers()
-    .then((json) => {
-      setState(prevState => {
-        return {...prevState, users: json };
-      });
-    });   
+    
   }, []);
 
 
@@ -148,6 +141,7 @@ function App() {
 
   return (
     <div>
+      <LoadingBar className="loading" />
       <Grid container spacing={3} className={classes.gridContainer}> 
         <DropdownBtns />
         {(state.count > 0 && state.author && state.posts.length > 0 ) && 
