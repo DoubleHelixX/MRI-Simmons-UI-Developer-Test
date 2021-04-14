@@ -1,14 +1,11 @@
 import React, {useState, useEffect} from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
-import Card from '@material-ui/core/Card';
-import CardActions from '@material-ui/core/CardActions';
-import CardContent from '@material-ui/core/CardContent';
-import Button from '@material-ui/core/Button';
-import Typography from '@material-ui/core/Typography';
-import Badge from '@material-ui/core/Badge';
-import CommentIcon from '@material-ui/icons/Comment';
 import DropdownBtns from "./DropdownBtns";
+import AuthorContentCard from "./AuthorContentCard";
+import ShowMoreBtn from "./ShowMoreBtn";
+
+
 
 
 function App() {
@@ -153,7 +150,6 @@ function App() {
     <div>
       <Grid container spacing={3} className={classes.gridContainer}> 
         <DropdownBtns />
-        
         {(state.count > 0 && state.author && state.posts.length > 0 ) && 
         ([...Array(
           (state.count + state.additionalViews) > state.posts.length 
@@ -161,40 +157,9 @@ function App() {
           state.posts.length 
           : 
           (state.count + state.additionalViews))].map((e, i) => ( 
-            <Grid item xs={12} key={state.posts[i].id}> {/* Author-Content-card */}
-              <Card className={classes.root} variant="outlined">
-                <CardContent>
-                  <Typography variant="h5" component="h2">
-                    {state.posts[i].title}
-                  </Typography>
-                  <Typography variant="body1" component="p">
-                  {state.posts[i].body}
-                  </Typography>
-                </CardContent>
-                <CardActions> {/* AuthorComments */}
-                  {state.posts[i].totalComments &&(  
-                  <Badge badgeContent={state.posts[i].totalComments} color="primary">
-                    <CommentIcon/>
-                  </Badge>
-                  )}
-                </CardActions>
-              </Card>
-            </Grid>
+            <AuthorContentCard/>
             )))}
-
-        <Grid item xs={12}> {/* Author-ShowMoreBtn */}
-          {(state.count && state.author ) && ((state.count + state.additionalViews ) < state.posts.length) ? (
-            <Button variant="outlined" color="primary" onClick= {showMore} className={classes.showMoreBtn}>
-                    SHOW MORE
-            </Button>
-          ):
-          (
-            <Button variant="outlined" color="primary" className={classes.showMoreBtn} disabled>
-                  SHOW MORE
-            </Button>
-          )
-          }
-        </Grid>
+            <ShowMoreBtn/>
       </Grid>
     </div>
   );
