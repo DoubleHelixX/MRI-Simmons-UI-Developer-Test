@@ -38,7 +38,6 @@ function App() {
         return {...prevState, users: json };
       });
     });   
-
   }, []);
 
 
@@ -103,45 +102,57 @@ function App() {
   const handleChange = (event) => {
     const name = event.target.name;
     const value = event.target.value;
-    // let comments_count = 0;
-    // getComments(state.all_posts[i].id)
-    if (name === 'author'){ 
-      let posts = "";
-      state.users.map((x,i) => {
-        if (state.users[i].name === value){
-            getUserPosts(state.users[i].id)
-            .then((json) => {
-              posts = json;
-              posts.map((x,i) => {
-                getComments(posts[i].id)
-                .then((json) => {
-                  posts[i].totalComments = json.length;
+    console.log('n', name, 'n', value);
+    if (value){
+      if (name === 'author'){ 
+        let posts = "";
+        state.users.map((x,i) => {
+          if (state.users[i].id == value){
+              getUserPosts(state.users[i].id)
+              .then((json) => {
+                posts = json;
+                posts.map((x,i) => {
+                  getComments(posts[i].id)
+                  .then((json) => {
+                    posts[i].totalComments = json.length;
+                  });
                 });
+            })
+            .then(() => {
+              setTimeout(() =>{ 
+              setState(prevState => {
+                return {
+                  ...prevState, 
+                  [name]:parseInt(value),
+                  author: value,
+                  posts : posts,
+                  additionalViews: 0 
+                };
               });
-              console.log('a', posts);
-              setState({
-                ...state,
-                [name]:value,
-                posts : posts,
-                additionalViews: 0
-              });
-          });
-        }
-      });      
-    }
+            }, 80);
+           });
+        }}); 
+      }
+        
     else if (name ==='count')
       setState({
         ...state,
         [name]:parseInt(value),
         additionalViews: 0
       });
+    }
+  else{
+    setState(prevState => {
+      return {
+        ...prevState, 
+        [name]:value
+      };
+    });
+  }
+    
 
   };
 
-
-  // if (state.all_posts && state.count){
-  //   console.log('count', parseInt(state.count), 'state', state.all_posts[0].title, 'array', [...Array(parseInt(state.count)-1)])
-  // }
 
   return (
     <div>
@@ -161,7 +172,7 @@ function App() {
             >
               <option aria-label="None" value="" />
               {state.users && (state.users.map((x,i) => (
-                <option value={state.users[i].name} key={state.users[i].id}>{state.users[i].name}</option>
+                <option value={state.users[i].id} key={state.users[i].id}>{state.users[i].name}</option>
               )))}
             </Select>
           </FormControl>
@@ -186,7 +197,7 @@ function App() {
               </Select>
             </FormControl>
         </Grid>
-        {(state.count > 0 && state.posts.length>0) && 
+        {(state.count > 0 && state.author && state.posts.length > 0 ) && 
         ([...Array(
           (state.count + state.additionalViews) > state.posts.length 
           ? 
@@ -204,9 +215,11 @@ function App() {
                   </Typography>
                 </CardContent>
                 <CardActions>
+                  {state.posts[i].totalComments &&(
                   <Badge badgeContent={state.posts[i].totalComments} color="primary">
                     <CommentIcon/>
                   </Badge>
+                  )}
                 </CardActions>
               </Card>
             </Grid>
