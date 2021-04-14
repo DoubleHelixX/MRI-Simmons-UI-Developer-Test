@@ -1,7 +1,5 @@
-import './App.css';
 import React, {useState, useEffect} from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import Paper from "@material-ui/core/Paper";
 import Grid from "@material-ui/core/Grid";
 import FormControl from "@material-ui/core/FormControl";
 import Select from "@material-ui/core/Select";
@@ -61,7 +59,7 @@ function App() {
       textAlign: "center",
       color: theme.palette.text.secondary
     },
-    grid_container: {
+    gridContainer: {
       margin: 5,
       // border: '1px solid red',
       width: "auto!important"
@@ -81,7 +79,7 @@ function App() {
     pos: {
       marginBottom: 12,
     },
-    show_more_btn: {
+    showMoreBtn: {
       width: "100%",
       textAlign: "center",
       fontWeight: "bold"
@@ -102,37 +100,38 @@ function App() {
   const handleChange = (event) => {
     const name = event.target.name;
     const value = event.target.value;
-    console.log('n', name, 'n', value);
     if (value){
       if (name === 'author'){ 
         let posts = "";
         state.users.map((x,i) => {
           if (state.users[i].id == value){
-              getUserPosts(state.users[i].id)
+            return getUserPosts(state.users[i].id)
               .then((json) => {
                 posts = json;
-                posts.map((x,i) => {
+                return posts.map((x,i) => 
                   getComments(posts[i].id)
                   .then((json) => {
                     posts[i].totalComments = json.length;
+                  })
+                );
+              })
+              .then(() => {
+                setTimeout(() =>{ 
+                  setState(prevState => {
+                    return {
+                      ...prevState, 
+                      [name]:parseInt(value),
+                      author: value,
+                      posts : posts,
+                      additionalViews: 0 
+                    };
                   });
-                });
-            })
-            .then(() => {
-              setTimeout(() =>{ 
-              setState(prevState => {
-                return {
-                  ...prevState, 
-                  [name]:parseInt(value),
-                  author: value,
-                  posts : posts,
-                  additionalViews: 0 
-                };
+                }, 80);
               });
-            }, 80);
-           });
-        }}); 
-      }
+          }
+          return
+      }); 
+    }
         
     else if (name ==='count')
       setState({
@@ -156,8 +155,8 @@ function App() {
 
   return (
     <div>
-      <Grid container spacing={3} className={classes.grid_container}>
-        <Grid item xs={6}>
+      <Grid container spacing={3} className={classes.gridContainer}> 
+        <Grid item xs={6}> {/* DropdownBtn */}
           <FormControl variant="outlined" className={classes.formControl}>
             <InputLabel htmlFor="outlined-age-native-simple">Author</InputLabel>
             <Select
@@ -177,7 +176,7 @@ function App() {
             </Select>
           </FormControl>
         </Grid>
-        <Grid item xs={6}>
+        <Grid item xs={6}> {/* DropdownBtn */} 
           <FormControl variant="outlined" className={classes.formControl}>
               <InputLabel htmlFor="outlined-age-native-simple">Count</InputLabel>
               <Select
@@ -204,7 +203,7 @@ function App() {
           state.posts.length 
           : 
           (state.count + state.additionalViews))].map((e, i) => ( 
-            <Grid item xs={12} key={state.posts[i].id}>
+            <Grid item xs={12} key={state.posts[i].id}> {/* Author-Content-card */}
               <Card className={classes.root} variant="outlined">
                 <CardContent>
                   <Typography variant="h5" component="h2">
@@ -214,8 +213,8 @@ function App() {
                   {state.posts[i].body}
                   </Typography>
                 </CardContent>
-                <CardActions>
-                  {state.posts[i].totalComments &&(
+                <CardActions> {/* AuthorComments */}
+                  {state.posts[i].totalComments &&(  
                   <Badge badgeContent={state.posts[i].totalComments} color="primary">
                     <CommentIcon/>
                   </Badge>
@@ -225,14 +224,14 @@ function App() {
             </Grid>
             )))}
 
-        <Grid item xs={12}>
+        <Grid item xs={12}> {/* Author-ShowMoreBtn */}
           {(state.count && state.author ) && ((state.count + state.additionalViews ) < state.posts.length) ? (
-            <Button variant="outlined" color="primary" onClick= {showMore} className={classes.show_more_btn}>
+            <Button variant="outlined" color="primary" onClick= {showMore} className={classes.showMoreBtn}>
                     SHOW MORE
             </Button>
           ):
           (
-            <Button variant="outlined" color="primary" className={classes.show_more_btn} disabled>
+            <Button variant="outlined" color="primary" className={classes.showMoreBtn} disabled>
                   SHOW MORE
             </Button>
           )
