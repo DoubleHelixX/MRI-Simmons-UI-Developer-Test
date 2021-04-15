@@ -1,0 +1,21 @@
+{
+  "files": {
+    "main.css": "/MRI-Simmons-UI-Developer-Test/static/css/main.6dea0f05.chunk.css",
+    "main.js": "/MRI-Simmons-UI-Developer-Test/static/js/main.8be89967.chunk.js",
+    "main.js.map": "/MRI-Simmons-UI-Developer-Test/static/js/main.8be89967.chunk.js.map",
+    "runtime-main.js": "/MRI-Simmons-UI-Developer-Test/static/js/runtime-main.0cc355bc.js",
+    "runtime-main.js.map": "/MRI-Simmons-UI-Developer-Test/static/js/runtime-main.0cc355bc.js.map",
+    "static/js/2.0909b39d.chunk.js": "/MRI-Simmons-UI-Developer-Test/static/js/2.0909b39d.chunk.js",
+    "static/js/2.0909b39d.chunk.js.map": "/MRI-Simmons-UI-Developer-Test/static/js/2.0909b39d.chunk.js.map",
+    "index.html": "/MRI-Simmons-UI-Developer-Test/index.html",
+    "static/css/main.6dea0f05.chunk.css.map": "/MRI-Simmons-UI-Developer-Test/static/css/main.6dea0f05.chunk.css.map",
+    "static/js/2.0909b39d.chunk.js.LICENSE.txt": "/MRI-Simmons-UI-Developer-Test/static/js/2.0909b39d.chunk.js.LICENSE.txt",
+    "static/js/main.8be89967.chunk.js.LICENSE.txt": "/MRI-Simmons-UI-Developer-Test/static/js/main.8be89967.chunk.js.LICENSE.txt"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.0cc355bc.js",
+    "static/js/2.0909b39d.chunk.js",
+    "static/css/main.6dea0f05.chunk.css",
+    "static/js/main.8be89967.chunk.js"
+  ]
+}
