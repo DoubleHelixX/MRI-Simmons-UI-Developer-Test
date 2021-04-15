@@ -9,26 +9,3 @@ export function receiveUsers(users) {
     payload: users,
   };
 }
-
-
-
-// export function handleAddUser(id, username, img) {
-//   return (dispatch, getState) => {
-//     dispatch(showLoading());
-
-//     return _saveUser({
-//       id,
-//       username,
-//       img,
-//     })
-//       .catch((e) => {
-//         console.warn("Error in saving user: ", e);
-//         // dispatch(toggleTweet(info))
-//         // alert('The was an error liking the tweet. Try again.')
-//       })
-//       .then(({ users }) => {
-//         dispatch(addUser(users));
-//       })
-//       .then(() => dispatch(hideLoading()));
-//   };
-// }
