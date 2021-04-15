@@ -1,32 +1,29 @@
-import { _getAllUsers} from "../utils/_DATA";
-import { receiveUsers } from "../actions/users";
-// import { receiveQuestions } from "../actions/questions";
-import {
-  RECEIVE_USERS_FAIL,
-} from "../actions/users";
 
 import { showLoading, hideLoading } from "react-redux-loading";
 
-// const AUTHED_ID = null;
-//tylermcginnis
+import { _getAllUsers } from "../utils/_DATA_API";
+
+import { receiveUsers } from "../actions/users";
+import { receiveCount } from "../actions/count";
+import { receiveAuthor } from "../actions/author";
+import { receivePosts } from "../actions/posts";
+import { receiveAdditionalViews } from "../actions/additionalViews";
+import { RECEIVE_USERS_FAIL } from "../actions/users";
+
 
 export function handleInitialData() {
   return (dispatch) => {
     dispatch(showLoading());
+    dispatch(receiveCount());
+    dispatch(receiveAuthor());
+    dispatch(receivePosts());
+    dispatch(receiveAdditionalViews());
+
     return _getAllUsers()
-    .then((users) => {
-      dispatch(receiveUsers(users));
-      dispatch(hideLoading());
-    })
-    .catch((err) => dispatch ({type: RECEIVE_USERS_FAIL, payload: err}));   
-  }
+      .then((users) => {
+        dispatch(receiveUsers(users));
+        dispatch(hideLoading());
+      })
+      .catch((err) => dispatch({ type: RECEIVE_USERS_FAIL, payload: err }));
+  };
 }
-
-
-// const _getAllUsers = () =>
-//     fetch(`${api}/users`)
-//     .then(response => response.json());
-
-// setState(prevState => {
-      //   return {...prevState, users: json };
-      // });
